@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>blog-appdomain-unhandled-exception</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="post">
+<header class="site">
+  <a class="brand" href="https://redtomram-gif.github.io/thottams-blog-archive/">Thottam R. Sriram</a>
+  <span class="tag">Code sample &middot; MSDN blog archive</span>
+</header>
+<main>
+<article>
+<h1>AppDomain UnhandledException handler</h1>
+<p class="meta">
+  <code>blog-appdomain-unhandled-exception</code>
+  <a class="repo" href="https://redtomram-gif.github.io/thottams-blog-archive/posts/2008-04-30-unhandled-exception-handler-unhandledexceptioneventhandler-to-collect-more-information-about-unexpected-exceptions.html">read the blog post &rarr;</a>
+</p>
+<p>Sample showing how to attach an <code>UnhandledExceptionEventHandler</code> to a sandboxed <code>AppDomain</code> to collect information about unexpected exceptions. <code>program.cs</code> throws handled and unhandled exceptions; <code>excep.cs</code> creates the AppDomain with an explicit <code>PermissionSet</code> and runs it.</p>
+
+<h2>Source</h2>
+<figure class="code">
+<figcaption>excep.cs <span class="lang">C#</span></figcaption>
+<pre><code class="hljs"><span class="hljs-keyword">using</span> System;
+<span class="hljs-keyword">using</span> System.Security;
+<span class="hljs-keyword">using</span> System.Security.Permissions;
+<span class="hljs-keyword">using</span> System.Reflection;
+<span class="hljs-keyword">using</span> System.Runtime.Remoting;
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Sample</span> 
+{
+   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Example</span>()</span>
+   {
+        AppDomainSetup ads = <span class="hljs-keyword">new</span> AppDomainSetup();
+        ads.ApplicationBase = System.Environment.CurrentDirectory;
+        PermissionSet psMain = <span class="hljs-keyword">new</span> PermissionSet(PermissionState.None);
+        SecurityPermission sec = <span class="hljs-keyword">new</span> SecurityPermission(PermissionState.Unrestricted);
+        ReflectionPermission sec1 = <span class="hljs-keyword">new</span> ReflectionPermission(PermissionState.Unrestricted);
+        FileIOPermission sec2 = <span class="hljs-keyword">new</span> FileIOPermission (PermissionState.Unrestricted);
+        UIPermission sec3 = <span class="hljs-keyword">new</span> UIPermission (PermissionState.Unrestricted);
+        psMain.AddPermission(sec);
+        psMain.AddPermission(sec1);
+        psMain.AddPermission(sec2);
+        psMain.AddPermission(sec3);
+        AppDomain md = AppDomain.CreateDomain(<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-literal">null</span>, ads, psMain, <span class="hljs-literal">null</span>);
+        md.UnhandledException += <span class="hljs-keyword">new</span> UnhandledExceptionEventHandler(MyHandler);
+        md.ExecuteAssembly(<span class="hljs-string">&quot;program.exe&quot;</span>);
+   }
+
+   <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">MyHandler</span>(<span class="hljs-params"><span class="hljs-built_in">object</span> sender, UnhandledExceptionEventArgs <span class="hljs-keyword">args</span></span>)</span> 
+   {
+      Exception e = (Exception) <span class="hljs-keyword">args</span>.ExceptionObject;
+      Console.WriteLine(<span class="hljs-string">&quot;Exception Message: {0}&quot;</span>, e.Message);
+   }
+
+   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Main</span>()</span> 
+   {
+      Example();
+   }
+}</code></pre>
+</figure>
+<figure class="code">
+<figcaption>program.cs <span class="lang">C#</span></figcaption>
+<pre><code class="hljs"><span class="hljs-keyword">using</span> System;
+<span class="hljs-keyword">using</span> System.Security;
+<span class="hljs-keyword">using</span> System.Security.Permissions;
+<span class="hljs-keyword">using</span> System.Reflection;
+<span class="hljs-keyword">using</span> System.Runtime.Remoting;
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Sample</span> 
+{
+   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Example</span>()</span>
+   {
+      AppDomain currentDomain = AppDomain.CurrentDomain;
+ <span class="hljs-comment">//     currentDomain.UnhandledException += new UnhandledExceptionEventHandler(MyHandler);</span>
+
+      <span class="hljs-keyword">try</span> 
+      {
+         <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">&quot;First Handled Exception&quot;</span>);
+      } 
+      <span class="hljs-keyword">catch</span> (Exception e) 
+      {
+         Console.WriteLine(<span class="hljs-string">&quot;Catch clause caught : &quot;</span> + e.Message);
+      }
+
+      <span class="hljs-keyword">try</span>
+      {
+          <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">&quot;Second Handled Exception&quot;</span>);
+      }
+      <span class="hljs-keyword">catch</span> (Exception e)
+      {
+          Console.WriteLine(<span class="hljs-string">&quot;Catch clause caught : &quot;</span> + e.Message);
+          <span class="hljs-comment">// throw;</span>
+          <span class="hljs-comment">// throw new Exception(&quot;Re-throw second exception&quot;, e);</span>
+      }
+
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">&quot;Un-Handled Exception&quot;</span>);
+   }
+
+   <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">MyHandler</span>(<span class="hljs-params"><span class="hljs-built_in">object</span> sender, UnhandledExceptionEventArgs <span class="hljs-keyword">args</span></span>)</span> 
+   {
+      Exception e = (Exception) <span class="hljs-keyword">args</span>.ExceptionObject;
+      Console.WriteLine(<span class="hljs-string">&quot;Exception Message: {0}&quot;</span>, e.Message);
+   }
+
+   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Main</span>()</span> 
+   {
+      Example();
+   }
+}</code></pre>
+</figure>
+</article>
+<p class="back"><a href="https://redtomram-gif.github.io/thottams-blog-archive/">&larr; All posts</a></p>
+</main>
+<footer class="site">
+  Part of the <a href="https://redtomram-gif.github.io/thottams-blog-archive/">MSDN blog archive</a>.
+  Source on <a href="https://github.com/redtomram-gif/blog-appdomain-unhandled-exception">GitHub</a>.
+</footer>
+</body>
+</html>
