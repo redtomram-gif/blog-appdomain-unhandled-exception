@@ -6,11 +6,11 @@ Originally published at [AppDomain UnhandledException handler](https://blogs.msd
 
 ## Building
 
-```text
-csc program.cs
-csc excep.cs
-excep.exe
-```
+<!-- Console -->
+
+    csc program.cs
+    csc excep.cs
+    excep.exe
 
 ## Note
 
