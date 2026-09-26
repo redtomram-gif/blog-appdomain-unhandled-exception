@@ -3,10 +3,10 @@ using System.Security;
 using System.Security.Permissions;
 using System.Reflection;
 using System.Runtime.Remoting;
-public class Sample 
+public class Sample
 {
-   public static void Example()
-   {
+    public static void Example()
+    {
         AppDomainSetup ads = new AppDomainSetup();
         ads.ApplicationBase = System.Environment.CurrentDirectory;
         PermissionSet psMain = new PermissionSet(PermissionState.None);
@@ -21,16 +21,16 @@ public class Sample
         AppDomain md = AppDomain.CreateDomain("A", null, ads, psMain, null);
         md.UnhandledException += new UnhandledExceptionEventHandler(MyHandler);
         md.ExecuteAssembly("program.exe");
-   }
+    }
 
-   static void MyHandler(object sender, UnhandledExceptionEventArgs args) 
-   {
-      Exception e = (Exception) args.ExceptionObject;
-      Console.WriteLine("Exception Message: {0}", e.Message);
-   }
+    static void MyHandler(object sender, UnhandledExceptionEventArgs args)
+    {
+        Exception e = (Exception) args.ExceptionObject;
+        Console.WriteLine("Exception Message: {0}", e.Message);
+    }
 
-   public static void Main() 
-   {
-      Example();
-   }
+    public static void Main()
+    {
+        Example();
+    }
 }

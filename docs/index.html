@@ -28,10 +28,10 @@
 <span class="hljs-keyword">using</span> System.Security.Permissions;
 <span class="hljs-keyword">using</span> System.Reflection;
 <span class="hljs-keyword">using</span> System.Runtime.Remoting;
-<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Sample</span> 
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Sample</span>
 {
-   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Example</span>()</span>
-   {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Example</span>()</span>
+    {
         AppDomainSetup ads = <span class="hljs-keyword">new</span> AppDomainSetup();
         ads.ApplicationBase = System.Environment.CurrentDirectory;
         PermissionSet psMain = <span class="hljs-keyword">new</span> PermissionSet(PermissionState.None);
@@ -46,18 +46,18 @@
         AppDomain md = AppDomain.CreateDomain(<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-literal">null</span>, ads, psMain, <span class="hljs-literal">null</span>);
         md.UnhandledException += <span class="hljs-keyword">new</span> UnhandledExceptionEventHandler(MyHandler);
         md.ExecuteAssembly(<span class="hljs-string">&quot;program.exe&quot;</span>);
-   }
+    }
 
-   <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">MyHandler</span>(<span class="hljs-params"><span class="hljs-built_in">object</span> sender, UnhandledExceptionEventArgs <span class="hljs-keyword">args</span></span>)</span> 
-   {
-      Exception e = (Exception) <span class="hljs-keyword">args</span>.ExceptionObject;
-      Console.WriteLine(<span class="hljs-string">&quot;Exception Message: {0}&quot;</span>, e.Message);
-   }
+    <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">MyHandler</span>(<span class="hljs-params"><span class="hljs-built_in">object</span> sender, UnhandledExceptionEventArgs <span class="hljs-keyword">args</span></span>)</span>
+    {
+        Exception e = (Exception) <span class="hljs-keyword">args</span>.ExceptionObject;
+        Console.WriteLine(<span class="hljs-string">&quot;Exception Message: {0}&quot;</span>, e.Message);
+    }
 
-   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Main</span>()</span> 
-   {
-      Example();
-   }
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Main</span>()</span>
+    {
+        Example();
+    }
 }</code></pre>
 </figure>
 <figure class="code">
@@ -67,46 +67,46 @@
 <span class="hljs-keyword">using</span> System.Security.Permissions;
 <span class="hljs-keyword">using</span> System.Reflection;
 <span class="hljs-keyword">using</span> System.Runtime.Remoting;
-<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Sample</span> 
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Sample</span>
 {
-   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Example</span>()</span>
-   {
-      AppDomain currentDomain = AppDomain.CurrentDomain;
- <span class="hljs-comment">//     currentDomain.UnhandledException += new UnhandledExceptionEventHandler(MyHandler);</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Example</span>()</span>
+    {
+        AppDomain currentDomain = AppDomain.CurrentDomain;
+        <span class="hljs-comment">//     currentDomain.UnhandledException += new UnhandledExceptionEventHandler(MyHandler);</span>
 
-      <span class="hljs-keyword">try</span> 
-      {
-         <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">&quot;First Handled Exception&quot;</span>);
-      } 
-      <span class="hljs-keyword">catch</span> (Exception e) 
-      {
-         Console.WriteLine(<span class="hljs-string">&quot;Catch clause caught : &quot;</span> + e.Message);
-      }
+        <span class="hljs-keyword">try</span>
+        {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">&quot;First Handled Exception&quot;</span>);
+        }
+        <span class="hljs-keyword">catch</span> (Exception e)
+        {
+            Console.WriteLine(<span class="hljs-string">&quot;Catch clause caught : &quot;</span> + e.Message);
+        }
 
-      <span class="hljs-keyword">try</span>
-      {
-          <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">&quot;Second Handled Exception&quot;</span>);
-      }
-      <span class="hljs-keyword">catch</span> (Exception e)
-      {
-          Console.WriteLine(<span class="hljs-string">&quot;Catch clause caught : &quot;</span> + e.Message);
-          <span class="hljs-comment">// throw;</span>
-          <span class="hljs-comment">// throw new Exception(&quot;Re-throw second exception&quot;, e);</span>
-      }
+        <span class="hljs-keyword">try</span>
+        {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">&quot;Second Handled Exception&quot;</span>);
+        }
+        <span class="hljs-keyword">catch</span> (Exception e)
+        {
+            Console.WriteLine(<span class="hljs-string">&quot;Catch clause caught : &quot;</span> + e.Message);
+            <span class="hljs-comment">// throw;</span>
+            <span class="hljs-comment">// throw new Exception(&quot;Re-throw second exception&quot;, e);</span>
+        }
 
-      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">&quot;Un-Handled Exception&quot;</span>);
-   }
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">&quot;Un-Handled Exception&quot;</span>);
+    }
 
-   <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">MyHandler</span>(<span class="hljs-params"><span class="hljs-built_in">object</span> sender, UnhandledExceptionEventArgs <span class="hljs-keyword">args</span></span>)</span> 
-   {
-      Exception e = (Exception) <span class="hljs-keyword">args</span>.ExceptionObject;
-      Console.WriteLine(<span class="hljs-string">&quot;Exception Message: {0}&quot;</span>, e.Message);
-   }
+    <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">MyHandler</span>(<span class="hljs-params"><span class="hljs-built_in">object</span> sender, UnhandledExceptionEventArgs <span class="hljs-keyword">args</span></span>)</span>
+    {
+        Exception e = (Exception) <span class="hljs-keyword">args</span>.ExceptionObject;
+        Console.WriteLine(<span class="hljs-string">&quot;Exception Message: {0}&quot;</span>, e.Message);
+    }
 
-   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Main</span>()</span> 
-   {
-      Example();
-   }
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Main</span>()</span>
+    {
+        Example();
+    }
 }</code></pre>
 </figure>
 </article>
